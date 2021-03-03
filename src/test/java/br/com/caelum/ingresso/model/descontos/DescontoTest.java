@@ -9,31 +9,38 @@ import org.junit.Test;
 
 import br.com.caelum.ingresso.model.Filme;
 import br.com.caelum.ingresso.model.Ingresso;
+import br.com.caelum.ingresso.model.Lugar;
 import br.com.caelum.ingresso.model.Sala;
 import br.com.caelum.ingresso.model.Sessao;
+import br.com.caelum.ingresso.model.TipoDeIngresso;
 
 public class DescontoTest {
 
 	@Test
 	public void naoDeveConcederDescontoParaIngressoNormal() {
 		
+		Lugar lugar = new Lugar("A",1);		
 		Sala sala = new Sala("Aricanduva - Dub", new BigDecimal("20.5")); 
+		
 		Filme filme = new Filme("Hulk", Duration.ofMinutes(120),"Ação", new BigDecimal("12.0")); 
 		Sessao sessao = new Sessao(LocalTime.parse("10:00:00"), sala, filme); 
+		Ingresso ingresso = new Ingresso(sessao, TipoDeIngresso.INTEIRO, lugar);
 		
-		Ingresso ingresso = new Ingresso(sessao, new SemDesconto()); 
 		BigDecimal precoEsperado = new BigDecimal("32.5"); 
+		
 		Assert.assertEquals(precoEsperado,ingresso.getPreco());
 	}
 	
 	@Test
 	public void deveConcederDescontoDe30PorcentoParaIngressosDeClientesDeBancos() {
 		
+		Lugar lugar = new Lugar("A",1);
 		Sala sala = new Sala("Analia Franco - IMAX", new BigDecimal("20.5"));
+	
 		Filme filme = new Filme("Iron Man", Duration.ofMinutes(120), "Ação", new BigDecimal("12.0"));
 		Sessao sessao = new Sessao(LocalTime.parse("10:00:00"), sala, filme);
+		Ingresso ingresso = new Ingresso(sessao, TipoDeIngresso.BANCO,lugar);
 		
-		Ingresso ingresso = new Ingresso(sessao, new DescontoParaBancos());
 		BigDecimal precoEsperado = new BigDecimal("22.75");
 		Assert.assertEquals(precoEsperado, ingresso.getPreco());
 	}
@@ -41,11 +48,13 @@ public class DescontoTest {
 	@Test
 	public void deveConcederDescontoDe50PorcentoParaIngressoDeEstudante() {
 		
+		Lugar lugar = new Lugar("A",1);
 		Sala sala = new Sala("Tatuapé - 3D", new BigDecimal("20.5")); 
-		Filme filme = new Filme("Spider-Man", Duration.ofMinutes(120), "Ação", new BigDecimal("12.0")); 
-		Sessao sessao = new Sessao(LocalTime.parse("10:00:00"), sala, filme); 
 		
-		Ingresso ingresso = new Ingresso(sessao, new DescontoParaEstudantes()); 
+		Filme filme = new Filme("Spider-Man", Duration.ofMinutes(120), "Ação", new BigDecimal("12.0")); 
+		Sessao sessao = new Sessao(LocalTime.parse("10:00:00"), sala, filme); 	
+		Ingresso ingresso = new Ingresso(sessao, TipoDeIngresso.ESTUDANTE,lugar);
+		
 		BigDecimal precoEsperado = new BigDecimal("16.25"); 
 		Assert.assertEquals(precoEsperado, ingresso.getPreco());
 	}

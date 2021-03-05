@@ -60,7 +60,7 @@ public class CompraController {
 			compraDao.save(carrinho.toCompra());
 			this.carrinho.limpa();
 		} else {
-			result.rejectValue("vencimento", "Vencimento inválido");
+			result.rejectValue("vencimento", "", "Vencimento inválido");
 			return checkout(cartao);
 		}
 		return modelAndView;
